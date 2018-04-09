@@ -55,9 +55,51 @@ ggplot(data = ssm_tidy) +
        x = "year",
        y = "number of states",
        caption = "(based on data from the Pew Research Center)") +
-  theme(axis.text.x = element_text(angle = -50, hjust = 1))
+  theme(axis.text.x = element_text(angle = -50))
 ggsave("stacked_year_x.png")
 
 ```
+
+```{r visual 3}
+
+# facet wrap ~ law type 
+ggplot(data = ssm_tidy) +
+  geom_bar(mapping = aes(x = Year, fill = Law)) +
+  facet_wrap(~Law, nrow = 2) +
+    labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
+       x = "year",
+       y = "number of states",
+       caption = "(based on data from the Pew Research Center)") +
+    theme(axis.text.x = element_text(angle = -85))
+ggsave("facet_law.png")
+
+# facet wrap ~ year
+ggplot(data = ssm_tidy) +
+  geom_bar(mapping = aes(x = Law, fill = Law)) +
+  facet_wrap(~Year, nrow = 3) +
+    labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
+       y = "number of states",
+       caption = "(based on data from the Pew Research Center)") +
+      theme(axis.title.x = element_blank(),
+            axis.text.x = element_blank(),
+            axis.ticks.x = element_blank())
+ggsave("facet_year.png")
+
+# facet wrap ~ state
+ssm_tidy$Year2 <- factor(ssm_tidy$Year, labels = c("'95", "'96", "'97", "'98", "'99", "'00", "'01", "'02", "'03", "'04", "'05", "'06", "'07", "'08", "'09", "'10", "'11", "'12", "'13", "'14", "'15"))
+ggplot(data = ssm_tidy) +
+  geom_bar(mapping = aes(x = Law, fill = Law)) +
+  facet_grid(Law~Year2) +
+      labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
+       y = "number of states",
+       caption = "(based on data from the Pew Research Center)") +
+      theme(strip.background = element_blank(),
+            axis.title.x = element_blank(),
+            axis.text.x = element_blank(),
+            axis.ticks.x = element_blank())
+ggsave("facet_law_year.png")  
+
+```
+
 
 
