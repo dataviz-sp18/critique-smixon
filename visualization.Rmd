@@ -46,3 +46,18 @@ ggsave("dodge_ssm.png")
 
 ```
 
+```{r visual 2}
+
+# stacked bar chart with x = year 
+ggplot(data = ssm_tidy) +
+  geom_bar(mapping = aes(x = Year, fill = Law)) +
+  labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
+       x = "year",
+       y = "number of states",
+       caption = "(based on data from the Pew Research Center)") +
+  theme(axis.text.x = element_text(angle = -50, hjust = 1))
+ggsave("stacked_year_x.png")
+
+```
+
+
