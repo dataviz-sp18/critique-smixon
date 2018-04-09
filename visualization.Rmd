@@ -1,0 +1,48 @@
+---
+title: "Visualization"
+author: "Sarah Mixon"
+date: "4/9/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readr)
+library(data.table)
+
+# Get data from github repo 
+require(RCurl)
+samesex_data <- read.csv(text=getURL("https://raw.githubusercontent.com/zonination/samesmarriage/master/ssm.csv"))
+
+# each obs is one state in one year
+ssm_tidy <- setNames(melt(samesex_data, id = c("State", "abbrev")), c("State", "abbrev", "Year", "Law"))
+
+```
+
+# DATA VISUALIZATION 
+## The dataset is the legal status of same-sex marriage by each US state (50 observations) from 1995-2015. 
+
+```{r visual 1}
+
+# stacked bar chart 
+ggplot(data = ssm_tidy) +
+  geom_bar(mapping = aes(x = Year, fill = Law)) +
+  coord_flip() +
+  labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
+       x = "number of states",
+       y = "year",
+       caption = "(based on data from the Pew Research Center)")
+ggsave("stacked_ssm.png")
+
+# beside bar chart
+ggplot(data = ssm_tidy) +
+  geom_bar(mapping = aes(x = Year, fill = Law), position = "dodge") +
+    labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
+       x = "number of states",
+       y = "year",
+       caption = "(based on data from the Pew Research Center)")
+ggsave("dodge_ssm.png")
+
+```
+
