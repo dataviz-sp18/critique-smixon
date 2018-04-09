@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(readr)
 library(data.table)
@@ -17,80 +17,16 @@ samesex_data <- read.csv(text=getURL("https://raw.githubusercontent.com/zoninati
 
 # each obs is one state in one year
 ssm_tidy <- setNames(melt(samesex_data, id = c("State", "abbrev")), c("State", "abbrev", "Year", "Law"))
-
 ```
 
-# DATA VISUALIZATION 
-## The dataset is the legal status of same-sex marriage by each US state (50 observations) from 1995-2015. 
+# Legal Status of Same-Sex Marriage, by year
 
-```{r visual 1}
+In 2015, the US Supreme Court ruled all state bans on same-sex marriage unconstitutional. This visualization highlights the changes in legal status of same-sex marriages leading up to that ruling, starting in 1995, when Utah became the first state to enact a Defense of Marriage Act. In 2003, Massachusetts became the first state to legalize same-sex marriage following a ruling by the state's highest court.
 
-# stacked bar chart 
-ggplot(data = ssm_tidy) +
-  geom_bar(mapping = aes(x = Year, fill = Law)) +
-  coord_flip() +
-  labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
-       x = "number of states",
-       y = "year",
-       caption = "(based on data from the Pew Research Center)")
-ggsave("stacked_ssm.png")
-
-# beside bar chart
-ggplot(data = ssm_tidy) +
-  geom_bar(mapping = aes(x = Year, fill = Law), position = "dodge") +
-    labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
-       x = "number of states",
-       y = "year",
-       caption = "(based on data from the Pew Research Center)")
-ggsave("dodge_ssm.png")
-
-```
-
-```{r visual 2}
-
-# stacked bar chart with x = year 
-ggplot(data = ssm_tidy) +
-  geom_bar(mapping = aes(x = Year, fill = Law)) +
-  labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
-       x = "year",
-       y = "number of states",
-       caption = "(based on data from the Pew Research Center)") +
-  theme(axis.text.x = element_text(angle = -50))
-ggsave("stacked_year_x.png")
-
-```
-
-```{r visual 3}
-
-# facet wrap ~ law type 
-ggplot(data = ssm_tidy) +
-  geom_bar(mapping = aes(x = Year, fill = Law)) +
-  facet_wrap(~Law, nrow = 2) +
-    labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
-       x = "year",
-       y = "number of states",
-       caption = "(based on data from the Pew Research Center)") +
-    theme(axis.text.x = element_text(angle = -85))
-ggsave("facet_law.png")
-
-# facet wrap ~ year
-ggplot(data = ssm_tidy) +
-  geom_bar(mapping = aes(x = Law, fill = Law)) +
-  facet_wrap(~Year, nrow = 3) +
-    labs(title = "Legal Status of Same-Sex Marriage in the US (1995-2015)",
-       y = "number of states",
-       caption = "(based on data from the Pew Research Center)") +
-      theme(axis.title.x = element_blank(),
-            axis.text.x = element_blank(),
-            axis.ticks.x = element_blank())
-ggsave("facet_year.png")
-```
-
-
-```{r visual four}
+```{r visual final}
 
 # ordering the levels of Law
-ssm_tidy$Law <- factor(ssm_tidy$Law, levels = c("No Law", "Constitutional Ban", "Statutory Ban", "Legal"), labels = c("No Law", "Constitutional Ban", "Statutory Ban", "Legal"))
+ssm_tidy$Law <- factor(ssm_tidy$Law, levels = c("No Law", "Statutory Ban", "Constitutional Ban", "Legal"), labels = c("No Law", "Statutory Ban", "Constitutional Ban", "Legal"))
 
 # tidying the appearance of Year for visualization
 ssm_tidy$Year2 <- factor(ssm_tidy$Year, labels = c("'95", "'96", "'97", "'98", "'99", "'00", "'01", "'02", "'03", "'04", "'05", "'06", "'07", "'08", "'09", "'10", "'11", "'12", "'13", "'14", "'15"))
@@ -105,10 +41,15 @@ ggplot(data = ssm_tidy) +
       theme(strip.background = element_blank(),
             axis.title.x = element_blank(),
             axis.text.x = element_blank(),
-            axis.ticks.x = element_blank())
+            axis.ticks.x = element_blank(),
+            legend.position = "none")
 ggsave("facet_law_year.png")  
-
 ```
 
+### Defense of Design Decisions
+The data is longitudinal, where changes at the observational level may or may not change over time. In this case, some states may only have seen one change, in 2015 when bans on same-sex marriage was ruled unconstitutional by the US Supreme Court. Showing the number of states over time, rather than each individual state, allows the viewer to see the trend at a national level. Representing each law status separately allows the viewer to clearly see trends within and across law status. 
 
+The order of the plots was chosen to represent a sense of ranking among the legal statuses. It is important to see how states move from no policy to a state statutory ban to a state constitutional ban before the ruling in 2015. 
+
+These decisions help facilitate the understanding of changes in the legal status of same-sex marriage, across states in the years leading up to the US Suprement Court ruling. While some states did legalize same-sex marriage before 2015, a large portion of the states enacted statutory and constitutional bans beginning in 1995. 
 
